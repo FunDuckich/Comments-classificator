@@ -22,3 +22,4 @@ if __name__ == "__main__":
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
     )
     asyncio.run(main())
+
