@@ -22,14 +22,14 @@ class CommentSomething(StatesGroup):
 
 @r.message(CommentSomething.choosing_type_for_comment, F.text.in_(types_for_comment))
 async def type_was_chosen(message: types.Message, state: FSMContext):
-    if message.text.lower() == 'фотография':
+    if message.text.lower() == 'фотографию':
         picture_for_comment = types.FSInputFile(pictures[randint(1, 1)])
         await message.answer_photo(
             picture_for_comment,
             caption='Жду вашего комментария на следующую фотографию:',
             reply_markup=types.ReplyKeyboardRemove()
         )
-    elif message.text.lower() == 'гифка':
+    elif message.text.lower() == 'гифку':
         gif_for_comment = types.FSInputFile(gifs[randint(1, 1)])
         await message.answer_video(
             gif_for_comment,
