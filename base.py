@@ -1,12 +1,13 @@
 import aiogram.fsm.state
+from random import randint  # для случайного выбора
+from data import *  # для хранения всякого
 from aiogram import Bot, Dispatcher, Router, types, enums, F
 from aiogram.filters import CommandStart
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 
-
 r = Router()
-types_for_comment = ['Фотографию', 'Гифку', 'Текст']
+types_for_comment = ['Фотография', 'Гифка', 'Текст']
 
 
 def make_row_keyboard(items: list[str]) -> types.ReplyKeyboardMarkup:
@@ -21,21 +22,21 @@ class CommentSomething(StatesGroup):
 
 @r.message(CommentSomething.choosing_type_for_comment, F.text.in_(types_for_comment))
 async def type_was_chosen(message: types.Message, state: FSMContext):
-    if message.text.lower() == 'фотографию':
-        picture_for_comment = types.FSInputFile("picture.jpeg")
+    if message.text.lower() == 'фотография':
+        picture_for_comment = types.FSInputFile(pictures[randint(1, 1)])
         await message.answer_photo(
             picture_for_comment,
             caption='Жду вашего комментария на следующую фотографию:',
             reply_markup=types.ReplyKeyboardRemove()
         )
-    elif message.text.lower() == 'гифку':
-        gif_for_comment = types.FSInputFile("roach-dancing.mp4")
+    elif message.text.lower() == 'гифка':
+        gif_for_comment = types.FSInputFile(gifs[randint(1, 1)])
         await message.answer_video(
             gif_for_comment,
             caption='Жду вашего комментария на следующую гифку:',
             reply_markup=types.ReplyKeyboardRemove()
         )
-    else:
+    elif message.text.lower() == 'текст':
         await message.answer(
             text='Ну тут типа текст какой-то, который нужно будет прокомментировать.',
             reply_markup=types.ReplyKeyboardRemove()
