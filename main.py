@@ -5,6 +5,8 @@ import asyncio
 import logging
 from aiogram import Bot, Dispatcher, enums
 
+# Тут вам в целом тоже похуй должно быть на всё, но если интересно, расскажу
+
 
 async def main() -> None:
     bot = Bot(API_TOKEN, parse_mode=enums.ParseMode.HTML)
