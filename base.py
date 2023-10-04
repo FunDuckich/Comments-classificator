@@ -7,7 +7,7 @@ from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 
 r = Router()
-types_for_comment = ['Фотография', 'Гифка', 'Текст']
+types_for_comment = ['Фотографию', 'Гифку', 'Текст']
 
 
 def make_row_keyboard(items: list[str]) -> types.ReplyKeyboardMarkup:
