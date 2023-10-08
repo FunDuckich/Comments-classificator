@@ -5,9 +5,18 @@ from aiogram import Bot, Dispatcher, Router, types, enums, F
 from aiogram.filters import CommandStart
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
+import tensorflow as tf
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
+
+pad_sequences = tf.keras.preprocessing.sequence.pad_sequences
 r = Router()
 types_for_comment = ['Фотографию', 'Гифку', 'Текст']
+model = tf.keras.models.load_model('Model')
+with open('tokenizer_config.json', 'r', encoding='utf-8') as file:
+    json_string = file.read()
+    tokenizer = tf.keras.preprocessing.text.tokenizer_from_json(json_string)
 
 
 def make_row_keyboard(items: list[str]) -> types.ReplyKeyboardMarkup:
@@ -23,7 +32,7 @@ class CommentSomething(StatesGroup):
 @r.message(CommentSomething.choosing_type_for_comment, F.text.in_(types_for_comment))
 async def type_was_chosen(message: types.Message, state: FSMContext):
     if message.text.lower() == 'фотографию':
-        picture_for_comment = types.FSInputFile(pictures[randint(1, 1)])
+        picture_for_comment = types.FSInputFile(pictures[randint(1, 50)])
         await message.answer_photo(
             picture_for_comment,
             caption='Жду вашего комментария на следующую фотографию:',
@@ -54,10 +63,19 @@ async def type_chosen_incorrectly(message: types.Message):
 
 @r.message(CommentSomething.commenting)
 async def rate(message: types.Message, state: FSMContext):
-    await message.answer(
-        text='Ну тут типа будет оценка вашего комментария',
-        reply_markup=types.ReplyKeyboardRemove()
-    )
+    sequence = tokenizer.texts_to_sequences([message.text])
+    data = pad_sequences(sequence, maxlen=200)
+    rating = model.predict(data)
+    if rating > 0.45:
+        await message.answer(
+            text='Спасибо за положительный комментарий!',
+            reply_markup=types.ReplyKeyboardRemove()
+        )
+    else:
+        await message.answer(
+            text='Зачем столько негатива?',
+            reply_markup=types.ReplyKeyboardRemove()
+        )
     await state.clear()
 
 
