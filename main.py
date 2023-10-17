@@ -5,14 +5,13 @@ import asyncio
 import logging
 from aiogram import Bot, Dispatcher, enums
 
-# Тут вам в целом тоже похуй должно быть на всё, но если интересно, расскажу
+
+bot = Bot(API_TOKEN, parse_mode=enums.ParseMode.HTML)
 
 
 async def main() -> None:
-    bot = Bot(API_TOKEN, parse_mode=enums.ParseMode.HTML)
     dp = Dispatcher()
     dp.include_router(router=r)
-
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
@@ -24,4 +23,3 @@ if __name__ == "__main__":
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
     )
     asyncio.run(main())
-

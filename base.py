@@ -1,12 +1,12 @@
-import aiogram.fsm.state
 from random import randint  # для случайного выбора
-from data import *  # для хранения всякого
-from aiogram import Bot, Dispatcher, Router, types, enums, F
+from data import *
+from aiogram import Router, types, F, Bot
 from aiogram.filters import CommandStart
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 import tensorflow as tf
 import os
+import json
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
@@ -32,23 +32,22 @@ class CommentSomething(StatesGroup):
 @r.message(CommentSomething.choosing_type_for_comment, F.text.in_(types_for_comment))
 async def type_was_chosen(message: types.Message, state: FSMContext):
     if message.text.lower() == 'фотографию':
-        picture_for_comment = types.FSInputFile(pictures[randint(1, 50)])
+        picture_for_comment = types.FSInputFile(pictures[randint(1, max(pictures.keys()))])
         await message.answer_photo(
-            picture_for_comment,
+            photo=picture_for_comment,
             caption='Жду вашего комментария на следующую фотографию:',
-            reply_markup=types.ReplyKeyboardRemove()
+            reply_markup=types.ReplyKeyboardRemove()  # удаляем кнопки, иначе так и будут висеть
         )
     elif message.text.lower() == 'гифку':
-        gif_for_comment = types.FSInputFile(gifs[randint(1, 1)])
-        await message.answer_video(
-            gif_for_comment,
+        await message.answer_animation(  # отправляем гифку
+            animation=gifs[randint(1, max(gifs.keys()))],
             caption='Жду вашего комментария на следующую гифку:',
-            reply_markup=types.ReplyKeyboardRemove()
+            reply_markup=types.ReplyKeyboardRemove()  # удаляем кнопки, иначе так и будут висеть
         )
     elif message.text.lower() == 'текст':
         await message.answer(
-            text='Ну тут типа текст какой-то, который нужно будет прокомментировать.',
-            reply_markup=types.ReplyKeyboardRemove()
+            text=texts[randint(1, max(gifs.keys()))],
+            reply_markup=types.ReplyKeyboardRemove()  # удаляем кнопки, иначе так и будут висеть
         )
     await state.set_state(CommentSomething.commenting)
 
@@ -69,12 +68,12 @@ async def rate(message: types.Message, state: FSMContext):
     if rating > 0.45:
         await message.answer(
             text='Спасибо за положительный комментарий!',
-            reply_markup=types.ReplyKeyboardRemove()
+            reply_markup=types.ReplyKeyboardRemove()  # удаляем кнопки, иначе так и будут висеть
         )
     else:
         await message.answer(
             text='Зачем столько негатива?',
-            reply_markup=types.ReplyKeyboardRemove()
+            reply_markup=types.ReplyKeyboardRemove()  # удаляем кнопки, иначе так и будут висеть
         )
     await state.clear()
 
