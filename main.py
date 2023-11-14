@@ -1,9 +1,9 @@
 import sys
 from config import API_TOKEN
-from base import r
 import asyncio
 import logging
 from aiogram import Bot, Dispatcher, enums
+from base import r
 
 
 bot = Bot(API_TOKEN, parse_mode=enums.ParseMode.HTML)
