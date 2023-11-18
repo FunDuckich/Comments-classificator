@@ -1,5 +1,6 @@
 from random import randint  # для случайного выбора
 
+#fdfdfdfdfdfdfdfdfdfd
 
 from data import *
 from aiogram import Router, types, F
