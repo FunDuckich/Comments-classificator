@@ -3,7 +3,7 @@ from config import API_TOKEN
 import asyncio
 import logging
 from aiogram import Bot, Dispatcher, enums
-from base import r
+from handlers import r
 
 
 bot = Bot(API_TOKEN, parse_mode=enums.ParseMode.HTML)
