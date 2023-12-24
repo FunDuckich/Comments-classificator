@@ -59,16 +59,16 @@ async def type_chosen_incorrectly(message: types.Message):
 
 @r.message(CommentSomething.commenting)
 async def rate(message: types.Message, state: FSMContext):
-    result = utils.get_result(message.text)
+    result = utils.get_result(message.text) * 100
     if result < 50:
         await message.answer(
-            text=f'Я на {abs(100 - result):.0%} уверен, что это негативный комментарий!',
+            text=f'Я на {int(abs(100 - result))}% уверен, что это негативный комментарий!',
             reply_to_message_id=message.message_id,
             reply_markup=types.ReplyKeyboardRemove()  # удаляем кнопки, иначе так и будут висеть
         )
     else:
         await message.answer(
-            text=f'Я на {abs(100 - result):.0%} уверен, что это положительный комментарий!',
+            text=f'Я на {int(result)}% уверен, что это положительный комментарий!',
             reply_to_message_id=message.message_id,
             reply_markup=types.ReplyKeyboardRemove()  # удаляем кнопки, иначе так и будут висеть
         )
