@@ -57,7 +57,7 @@ async def type_chosen_incorrectly(message: types.Message):
     )
 
 
-@r.message(CommentSomething.commenting)
+@r.message(CommentSomething.commenting, F.text)
 async def rate(message: types.Message, state: FSMContext):
     result = utils.get_result(message.text) * 100
     if result < 50:
@@ -73,6 +73,15 @@ async def rate(message: types.Message, state: FSMContext):
             reply_markup=types.ReplyKeyboardRemove()  # удаляем кнопки, иначе так и будут висеть
         )
     await state.clear()
+
+
+@r.message(CommentSomething.commenting)
+async def incorrect_comment(message: types.Message):
+    await message.answer(
+        text="Комментарий нужно писать текстом!",
+        reply_to_message_id=message.message_id,
+        reply_markup=types.ReplyKeyboardRemove()
+    )
 
 
 @r.message(CommandStart())
